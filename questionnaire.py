@@ -1,3 +1,5 @@
+import json
+
 # PROJET QUESTIONNAIRE V3 : POO
 #
 # - Pratiquer sur la POO
@@ -19,11 +21,11 @@
 #    - lancer()
 #
 
+# adaptation de la class Question
 class Question:
-    def __init__(self, titre, choix, bonne_reponse):
+    def __init__(self, titre, choix):
         self.titre = titre
         self.choix = choix
-        self.bonne_reponse = bonne_reponse
 
     def FromData(data):
         # ....
@@ -34,12 +36,14 @@ class Question:
         print("QUESTION")
         print("  " + self.titre)
         for i in range(len(self.choix)):
-            print("  ", i+1, "-", self.choix[i])
+            choix_i = self.choix[i]
+            print("  ", i+1, "-", choix_i[0])
 
         print()
         resultat_response_correcte = False
         reponse_int = Question.demander_reponse_numerique_utlisateur(1, len(self.choix))
-        if self.choix[reponse_int-1].lower() == self.bonne_reponse.lower():
+        choix_utilisateur = self.choix[reponse_int-1]
+        if choix_utilisateur[1]:
             print("Bonne réponse")
             resultat_response_correcte = True
         else:
@@ -61,12 +65,24 @@ class Question:
         return Question.demander_reponse_numerique_utlisateur(min, max)
     
 class Questionnaire:
-    def __init__(self, questions):
-        self.questions = questions
+    def __init__(self, quizz):
+        self.quizz = quizz
+        self.recup_elements_quizz()
+    
+    # metode pour recupérer les elements du fichier json
+    def recup_elements_quizz(self):
+        data_quizz = open (self.quizz, "r")
+        data_json = data_quizz.read()
+        data = json.loads(data_json)
+        data_quizz.close()
+        self.categorie = data["categorie"]
+        self.titre = data["titre"]
+        self.questions = data["questions"]
+        self.difficulte = data["difficulte"]
 
     def lancer(self):
         score = 0
-        for question in self.questions:
+        for question in self.quizz:
             if question.poser():
                 score += 1
         print("Score final :", score, "sur", len(self.questions))
