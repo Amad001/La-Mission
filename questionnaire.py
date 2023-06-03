@@ -1,4 +1,5 @@
 import json
+import sys
 
 # PROJET QUESTIONNAIRE V3 : POO
 #
@@ -78,14 +79,20 @@ class Questionnaire:
     
     # metode pour recupérer les elements du fichier json
     def recup_elements_quizz(self):
-        data_quizz = open (self.quizz, "r")
-        data_json = data_quizz.read()
-        data = json.loads(data_json)
-        data_quizz.close()
-        self.categorie = data["categorie"]
-        self.titre = data["titre"]
-        self.questions_dict = data["questions"]
-        self.difficulte = data["difficulte"]
+        try:
+            data_quizz = open (self.quizz, "r")
+            data_json = data_quizz.read()
+            data = json.loads(data_json)
+            data_quizz.close()
+        except:
+            print("Erreur file_name")
+            return False
+        else:
+            self.categorie = data["categorie"]
+            self.titre = data["titre"]
+            self.questions_dict = data["questions"]
+            self.difficulte = data["difficulte"]
+            return True
 
     # générer des objets Questions
     def generer_questions(self):
@@ -153,23 +160,19 @@ quizz_noms = (
 )
 quizz_difficultes = ("debutant", "confirme", "expert")
 
-print("""         BIENVENUE
-    Améliorez votre culture """)
 
-print("choisisez un quizz")
-for i in range(len(quizz_noms)):
-    print(f" {i+1} - {quizz_noms[i]}")
-quizz_choix = demander_reponse_numerique(1, len(quizz_noms))
-quizz_nom = quizz_noms[quizz_choix-1]
 
-print("choisisez une difficulté")
-for i in range(len(quizz_difficultes)):
-    print(f" {i+1} - {quizz_difficultes[i]}")
-quizz_choix_d = demander_reponse_numerique(1, len(quizz_difficultes))
-quizz_difficulte = quizz_difficultes[quizz_choix_d-1]
+if len(sys.argv) < 2:
+    print("Erreur vous devez entrer un quizz")
+    exit(0)
 
-quizz = generer_nom_quizz(quizz_nom, quizz_difficulte)
+quizz = sys.argv[1]
 
-Questionnaire(quizz).lancer()
+questionnaire = Questionnaire(quizz)
+
+if questionnaire.recup_elements_quizz():
+    questionnaire.lancer()
+else:
+    exit
 
 
