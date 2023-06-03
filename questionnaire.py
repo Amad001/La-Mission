@@ -68,6 +68,7 @@ class Questionnaire:
     def __init__(self, quizz):
         self.quizz = quizz
         self.recup_elements_quizz()
+        self.generer_questions()
     
     # metode pour recupérer les elements du fichier json
     def recup_elements_quizz(self):
@@ -77,12 +78,18 @@ class Questionnaire:
         data_quizz.close()
         self.categorie = data["categorie"]
         self.titre = data["titre"]
-        self.questions = data["questions"]
+        self.questions_dict = data["questions"]
         self.difficulte = data["difficulte"]
+
+    # générer des objets Questions
+    def generer_questions(self):
+        self.questions = []
+        for question in self.questions_dict:
+            self.questions.append(Question(question[0], question[1]))
 
     def lancer(self):
         score = 0
-        for question in self.quizz:
+        for question in self.questions:
             if question.poser():
                 score += 1
         print("Score final :", score, "sur", len(self.questions))
