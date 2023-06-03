@@ -33,7 +33,6 @@ class Question:
         return q
 
     def poser(self):
-        print("QUESTION")
         print("  " + self.titre)
         for i in range(len(self.choix)):
             choix_i = self.choix[i]
@@ -69,6 +68,13 @@ class Questionnaire:
         self.quizz = quizz
         self.recup_elements_quizz()
         self.generer_questions()
+        print(f"""                  ---- QUIZZ ----  
+                Titre: {self.titre}
+                Catégorie: {self.categorie}
+                Difficulté: {self.difficulte}
+                Nombre de questions: {len(self.questions)}
+                """)
+
     
     # metode pour recupérer les elements du fichier json
     def recup_elements_quizz(self):
@@ -85,11 +91,14 @@ class Questionnaire:
     def generer_questions(self):
         self.questions = []
         for question in self.questions_dict:
-            self.questions.append(Question(question[0], question[1]))
+            self.questions.append(Question(question["titre"], question["choix"]))
 
     def lancer(self):
         score = 0
+        i = 0
         for question in self.questions:
+            i += 1
+            print(f"Question: {i}/{len(self.questions)} ")
             if question.poser():
                 score += 1
         print("Score final :", score, "sur", len(self.questions))
@@ -111,12 +120,14 @@ lancer_questionnaire(questionnaire)"""
 # q = Question.FromData(data)
 # print(q.__dict__)
 
-Questionnaire(
+"""Questionnaire(
     (
     Question("Quelle est la capitale de la France ?", ("Marseille", "Nice", "Paris", "Nantes", "Lille"), "Paris"), 
     Question("Quelle est la capitale de l'Italie ?", ("Rome", "Venise", "Pise", "Florence"), "Rome"),
     Question("Quelle est la capitale de la Belgique ?", ("Anvers", "Bruxelles", "Bruges", "Liège"), "Bruxelles")
     )
-).lancer()
+).lancer()"""
+
+Questionnaire("animaux_leschats_confirme.json").lancer()
 
 
