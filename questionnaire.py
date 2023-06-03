@@ -103,7 +103,23 @@ class Questionnaire:
                 score += 1
         print("Score final :", score, "sur", len(self.questions))
         return score
+    
 
+def demander_reponse_numerique(min, max):
+        reponse_str = input("Votre réponse (entre " + str(min) + " et " + str(max) + ") :")
+        try:
+            reponse_int = int(reponse_str)
+            if min <= reponse_int <= max:
+                return reponse_int
+
+            print("ERREUR : Vous devez rentrer un nombre entre", min, "et", max)
+        except:
+            print("ERREUR : Veuillez rentrer uniquement des chiffres")
+        return Question.demander_reponse_numerique_utlisateur(min, max)
+
+
+def generer_nom_quizz(nom, diff):
+    return nom + "_" + diff + ".json"
 
 """questionnaire = (
     ("Quelle est la capitale de la France ?", ("Marseille", "Nice", "Paris", "Nantes", "Lille"), "Paris"), 
@@ -128,6 +144,32 @@ lancer_questionnaire(questionnaire)"""
     )
 ).lancer()"""
 
-Questionnaire("animaux_leschats_confirme.json").lancer()
+quizz_noms = (
+    "animaux_leschats",
+    "arts_museedulouvre",
+    "bandedessinnee_tintin",
+    "cinema_alien",
+    "cinema_starwars",
+)
+quizz_difficultes = ("debutant", "confirme", "expert")
+
+print("""         BIENVENUE
+    Améliorez votre culture """)
+
+print("choisisez un quizz")
+for i in range(len(quizz_noms)):
+    print(f" {i+1} - {quizz_noms[i]}")
+quizz_choix = demander_reponse_numerique(1, len(quizz_noms))
+quizz_nom = quizz_noms[quizz_choix-1]
+
+print("choisisez une difficulté")
+for i in range(len(quizz_difficultes)):
+    print(f" {i+1} - {quizz_difficultes[i]}")
+quizz_choix_d = demander_reponse_numerique(1, len(quizz_difficultes))
+quizz_difficulte = quizz_difficultes[quizz_choix_d-1]
+
+quizz = generer_nom_quizz(quizz_nom, quizz_difficulte)
+
+Questionnaire(quizz).lancer()
 
 
